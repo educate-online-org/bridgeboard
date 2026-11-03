@@ -4,7 +4,7 @@ A demo showing an AI browser agent doing university admin setup by hand-off: it 
 
 No real systems, APIs, or student data are involved. Both systems are minimal fake web apps in this repo.
 
-> Status: **milestones 1–2 done** (workspace, shared schemas, seed data, fake SITS). Fake BB and agent not built yet. See [Milestones](#milestones).
+> Status: **milestones 1–3 done** (workspace, shared schemas, seed data, fake SITS, fake BB). Agent not built yet. See [Milestones](#milestones).
 
 Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
@@ -49,7 +49,7 @@ pnpm seed              # seed both systems
 | --- | --- |
 | `pnpm seed` | Create `data/` with fresh SITS + BB data (layout v1) ✅ |
 | `pnpm test` / `pnpm typecheck` | Run tests / type checks ✅ |
-| `pnpm dev` | Start fake SITS (3001) and fake BB (3002); SITS only for now ✅ |
+| `pnpm dev` | Start fake SITS (3001) and fake BB (3002) ✅ |
 | `pnpm agent:run` | Transfer all valid modules SITS → BB |
 | `pnpm agent:run --module U24CS101` | Transfer a single module |
 | `pnpm verify` | Compare databases; write console + HTML report |
@@ -123,7 +123,7 @@ Nothing here is purely browser-side:
 
 - [x] 1. Monorepo + shared schema + seed data
 - [x] 2. Fake SITS (v1, then v2)
-- [ ] 3. Fake BB (v1, then v2, incl. Quill and review page)
+- [x] 3. Fake BB (v1, then v2, incl. Quill and review page)
 - [ ] 4. Agent reads SITS correctly for all modules
 - [ ] 5. Agent creates BB content for one module, then all
 - [ ] 6. Validation and flagging
