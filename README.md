@@ -93,7 +93,8 @@ Demo logins (fake, hardcoded):
 | Audience | Live demo, so runs must be robust and short; add a pre-flight check |
 | Partial failure | Leave what was created (it's hidden), mark the module failed in log and report |
 | Re-runs | If the course already has "Module Information", skip the module and log it; `pnpm reset` to redo |
-| Quill | Typing with shortcuts, no HTML pasting |
+| Quill | Typing with shortcuts, no HTML pasting; kept as one swappable "enter formatted content" step |
+| Real systems (later) | Agent built so the fake systems can be swapped for CCCU's real ones; real BB verification via REST API. Login/SSO out of scope for now. Access needed: [`docs/CCCU_ACCESS.md`](docs/CCCU_ACCESS.md) |
 
 ## How the pieces run
 

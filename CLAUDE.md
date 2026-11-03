@@ -17,4 +17,5 @@ Full spec: `docs/BRIEF.md`. Read it before starting a milestone.
 - Branding: name "CCCU" as text only; no real logos/assets.
 - Partial module failure: leave created content, mark failed. Re-run: skip a course that already has "Module Information".
 - Live demo: keep runs short and robust; `pnpm preflight` checks setup.
+- Eventually runs on CCCU's real SITS/BB: keep fake-specific details (URLs, step wording, editor input) in per-system config/connectors, not the main flow. Verify source must be swappable (fake JSON now, BB REST API later). See docs/CCCU_ACCESS.md.
 - Work milestone by milestone (see README); keep things simple.
