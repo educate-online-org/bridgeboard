@@ -9,6 +9,8 @@
   },
   "scripts": {
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "agent:run": "tsx agent/src/run.ts",
+    "agent:check-extraction": "tsx agent/src/check-extraction.ts",
     "seed": "pnpm --filter @bridgeboard/seed seed",
     "reset": "pnpm --filter @bridgeboard/seed reset",
     "layout": "pnpm --filter @bridgeboard/seed layout",

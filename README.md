@@ -4,7 +4,7 @@ A demo showing an AI browser agent doing university admin setup by hand-off: it 
 
 No real systems, APIs, or student data are involved. Both systems are minimal fake web apps in this repo.
 
-> Status: **milestones 1–3 done** (workspace, shared schemas, seed data, fake SITS, fake BB). Agent not built yet. See [Milestones](#milestones).
+> Status: **milestones 1–3 done**; milestone 4 (agent reads SITS) is built and waiting for a first run with a real OpenAI key. See [Milestones](#milestones).
 
 Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
@@ -32,6 +32,7 @@ Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 ## Prerequisites
 
 - Node.js 20+ (developed on 26, see `.nvmrc`)
+- Google Chrome (Stagehand drives your local Chrome)
 - pnpm 9+
 - An OpenAI API key
 
@@ -50,7 +51,8 @@ pnpm seed              # seed both systems
 | `pnpm seed` | Create `data/` with fresh SITS + BB data (layout v1) ✅ |
 | `pnpm test` / `pnpm typecheck` | Run tests / type checks ✅ |
 | `pnpm dev` | Start fake SITS (3001) and fake BB (3002) ✅ |
-| `pnpm agent:run` | Transfer all valid modules SITS → BB |
+| `pnpm agent:run` | Transfer all valid modules SITS → BB (for now: read + validate SITS only) |
+| `pnpm agent:check-extraction` | Dev check: compare the last run's extracted data with SITS exactly |
 | `pnpm agent:run --module U24CS101` | Transfer a single module |
 | `pnpm verify` | Compare databases; write console + HTML report |
 | `pnpm preflight` | Check both apps are up, logins work, API key set (run before a live demo) |
@@ -63,7 +65,7 @@ Set in `.env` (see `.env.example`):
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
-| `MODEL_NAME` | LLM for Stagehand, as `provider/model` | `openai/<model>` |
+| `MODEL_NAME` | LLM for Stagehand, as `provider/model` | `openai/gpt-5.6-sol` |
 | `OPENAI_API_KEY` | OpenAI API key used by Stagehand | — |
 | `SITS_URL` | Fake SITS base URL | `http://localhost:3001` |
 | `BB_URL` | Fake BB base URL | `http://localhost:3002` |

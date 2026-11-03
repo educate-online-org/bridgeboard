@@ -1,0 +1,13 @@
+{
+  "name": "@bridgeboard/agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@bridgeboard/shared": "workspace:*",
+    "@browserbasehq/stagehand": "^4.3.0",
+    "zod": "~4.4.3"
+  }
+}
