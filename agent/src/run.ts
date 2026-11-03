@@ -4,7 +4,7 @@ import { validateModule } from "@bridgeboard/shared";
 import { openSession } from "./browser";
 import { config } from "./config";
 import { listModuleCodes, loginSits, readModule } from "./connectors/sits";
-import { RunLog, message } from "./log";
+import { RunLog, isFatal, message } from "./log";
 
 const args = process.argv.slice(2);
 const only = args.includes("--module") ? args[args.indexOf("--module") + 1] : undefined;
@@ -25,6 +25,7 @@ try {
       if (result.ok) log.setModule(code, { status: "valid", flags: [], extracted: raw, extractedWith: method });
       else log.flag(code, result.flags, { extracted: raw, extractedWith: method });
     } catch (err) {
+      if (isFatal(err)) throw err; // account problem: stop the run, don't fail every module
       log.setModule(code, { status: "failed", flags: [], error: message(err) });
     }
   }

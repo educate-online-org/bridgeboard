@@ -40,7 +40,9 @@ export class RunLog {
     const start = Date.now();
     const label = `${opts.module ? `[${opts.module}] ` : ""}${name}`;
     let lastError: unknown;
+    let attempts = 0;
     for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+      attempts = attempt;
       try {
         const result = await fn(attempt);
         const ms = Date.now() - start;
@@ -49,6 +51,7 @@ export class RunLog {
         return result;
       } catch (err) {
         lastError = err;
+        if (isFatal(err)) break; // retrying can't fix a bad key or an empty account
         if (attempt <= MAX_RETRIES) {
           console.log(`${c.yellow}↻${c.reset} ${label} ${c.dim}failed (${message(err)}), re-observing and retrying…${c.reset}`);
           await new Promise((r) => setTimeout(r, 800));
@@ -57,7 +60,7 @@ export class RunLog {
       }
     }
     const ms = Date.now() - start;
-    this.steps.push({ name, module: opts.module, status: "failed", attempts: MAX_RETRIES + 1, ms, error: message(lastError) });
+    this.steps.push({ name, module: opts.module, status: "failed", attempts, ms, error: message(lastError) });
     console.log(`${c.red}✘${c.reset} ${label} ${c.dim}(${secs(ms)})${c.reset} ${message(lastError)}`);
     throw lastError;
   }
@@ -95,6 +98,11 @@ export class RunLog {
       console.log(`  ${icon} ${code}: ${m.status}${m.flags.length ? ` — ${m.flags.join(" ")}` : ""}${m.error ? ` — ${m.error}` : ""}`);
     }
   }
+}
+
+/** Account/configuration problems: stop the whole run instead of retrying. */
+export function isFatal(err: unknown): boolean {
+  return /api key|no credits|insufficient_quota|exceeded your current quota|billing/i.test(message(err));
 }
 
 export function message(err: unknown): string {
