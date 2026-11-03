@@ -13,4 +13,8 @@ Full spec: `docs/BRIEF.md`. Read it before starting a milestone.
 - Quill content is entered by typing with shortcuts (e.g. `- ` for bullets). No HTML pasting.
 - Agent-created BB content is always Hidden by default.
 - Invalid modules are flagged and skipped, never guessed or partially created.
+- Storage: one JSON file per fake app. No SQLite.
+- Branding: name "CCCU" as text only; no real logos/assets.
+- Partial module failure: leave created content, mark failed. Re-run: skip a course that already has "Module Information".
+- Live demo: keep runs short and robust; `pnpm preflight` checks setup.
 - Work milestone by milestone (see README); keep things simple.

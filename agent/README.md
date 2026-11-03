@@ -10,6 +10,8 @@ The agent does not know which layout is active and never sets it.
 
 Quill: content is typed using Quill's shortcuts (e.g. `- ` starts a bullet). No HTML pasting.
 
+Before creating content, the agent checks the course: if "Module Information" already exists, it skips the module and logs why. If a module fails partway, created content is left (hidden) and the module is marked failed.
+
 Rules: natural-language actions only (no selectors/coordinates); retry a failed step up to 2× after re-observing; invalid modules are flagged and skipped.
 
 ```bash

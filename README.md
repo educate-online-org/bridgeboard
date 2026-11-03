@@ -21,8 +21,8 @@ Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
 | Path | What it is | Port |
 | --- | --- | --- |
-| `apps/fake-sits` | Fake SITS: old-school, read-only records system (Next.js) | 3001 |
-| `apps/fake-bb` | Fake Blackboard Ultra: course shells, Quill editor, review page (Next.js) | 3002 |
+| `apps/fake-sits` | Fake SITS: old-school, read-only records system (Next.js, JSON storage) | 3001 |
+| `apps/fake-bb` | Fake Blackboard Ultra: course shells, Quill editor, review page (Next.js, JSON storage) | 3002 |
 | `agent/` | Stagehand + Playwright browser agent, OpenAI as the LLM (configurable) | — |
 | `packages/shared` | Shared TypeScript types + Zod `Module` schema | — |
 | `verify/` | Compares SITS DB (ground truth) against BB DB; console + HTML report | — |
@@ -31,7 +31,7 @@ Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 20+ (developed on 26, see `.nvmrc`)
 - pnpm 9+
 - An OpenAI API key
 
@@ -51,6 +51,7 @@ pnpm reset             # seed both systems
 | `pnpm agent:run` | Transfer all valid modules SITS → BB |
 | `pnpm agent:run --module U24CS101` | Transfer a single module |
 | `pnpm verify` | Compare databases; write console + HTML report |
+| `pnpm preflight` | Check both apps are up, logins work, API key set (run before a live demo) |
 | `pnpm layout v1` / `pnpm layout v2` | Switch the UI layout of both fake systems |
 | `pnpm reset` | Wipe BB content and reseed both systems |
 
@@ -80,6 +81,19 @@ Demo logins (fake, hardcoded):
 5. `pnpm layout v2` (or the admin-corner toggle), `pnpm reset`, run again: it still works.
 6. Show the flagged broken module in the run log.
 7. Publish one item via BB's `/admin/review`.
+
+## Decisions
+
+| Topic | Decision |
+| --- | --- |
+| LLM | OpenAI via Stagehand, model from Stagehand's recommended list (set in `MODEL_NAME`) |
+| Storage | JSON files, one per fake app (no SQLite) |
+| Seed data | Computer Science: 3 valid modules + 1 broken |
+| Branding | Both fake systems carry the name **CCCU** (text only, no real logos or assets) |
+| Audience | Live demo, so runs must be robust and short; add a pre-flight check |
+| Partial failure | Leave what was created (it's hidden), mark the module failed in log and report |
+| Re-runs | If the course already has "Module Information", skip the module and log it; `pnpm reset` to redo |
+| Quill | Typing with shortcuts, no HTML pasting |
 
 ## How the pieces run
 
