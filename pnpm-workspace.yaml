@@ -4,3 +4,6 @@ packages:
   - "agent"
   - "verify"
   - "seed"
+
+allowBuilds:
+  esbuild: true

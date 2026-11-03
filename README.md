@@ -4,7 +4,7 @@ A demo showing an AI browser agent doing university admin setup by hand-off: it 
 
 No real systems, APIs, or student data are involved. Both systems are minimal fake web apps in this repo.
 
-> Status: **scaffolding only.** Folder structure and docs are in place; no application code yet. See [Milestones](#milestones).
+> Status: **milestone 1 done** (workspace, shared schemas, seed data). Fake apps and agent not built yet. See [Milestones](#milestones).
 
 Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
@@ -40,20 +40,22 @@ Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 ```bash
 pnpm install
 cp .env.example .env   # then add your OPENAI_API_KEY and MODEL_NAME
-pnpm reset             # seed both systems
+pnpm seed              # seed both systems
 ```
 
-## Commands (planned)
+## Commands
 
 | Command | Does |
 | --- | --- |
+| `pnpm seed` | Create `data/` with fresh SITS + BB data (layout v1) ✅ |
+| `pnpm test` / `pnpm typecheck` | Run tests / type checks ✅ |
 | `pnpm dev` | Start fake SITS (3001) and fake BB (3002) |
 | `pnpm agent:run` | Transfer all valid modules SITS → BB |
 | `pnpm agent:run --module U24CS101` | Transfer a single module |
 | `pnpm verify` | Compare databases; write console + HTML report |
 | `pnpm preflight` | Check both apps are up, logins work, API key set (run before a live demo) |
-| `pnpm layout v1` / `pnpm layout v2` | Switch the UI layout of both fake systems |
-| `pnpm reset` | Wipe BB content and reseed both systems |
+| `pnpm layout v1` / `pnpm layout v2` | Switch the UI layout of both fake systems ✅ |
+| `pnpm reset` | Wipe BB content and reseed both systems, keeping the current layout ✅ |
 
 ## Configuration
 
@@ -119,7 +121,7 @@ Nothing here is purely browser-side:
 
 ## Milestones
 
-- [ ] 1. Monorepo + shared schema + seed data
+- [x] 1. Monorepo + shared schema + seed data
 - [ ] 2. Fake SITS (v1, then v2)
 - [ ] 3. Fake BB (v1, then v2, incl. Quill and review page)
 - [ ] 4. Agent reads SITS correctly for all modules

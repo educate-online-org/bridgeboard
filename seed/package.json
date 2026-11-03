@@ -1,0 +1,14 @@
+{
+  "name": "@bridgeboard/seed",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "tsx seed.ts",
+    "reset": "tsx seed.ts --keep-layout",
+    "layout": "tsx layout.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@bridgeboard/shared": "workspace:*"
+  }
+}

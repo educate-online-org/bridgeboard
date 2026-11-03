@@ -1,0 +1,73 @@
+[
+  {
+    "code": "U24CS101",
+    "title": "Introduction to Programming",
+    "level": 4,
+    "credits": 20,
+    "term": "2026/27 Semester 1",
+    "leader": "Dr Amelia Hart",
+    "description": "An introduction to programming using Python. Students learn core constructs such as variables, control flow, functions and data structures, and apply them to solve small real-world problems while developing good habits in testing and code style.",
+    "learningOutcomes": [
+      "Write, test and debug small programs using core programming constructs.",
+      "Select appropriate data structures to represent and manipulate data.",
+      "Decompose a problem into functions and explain the design choices made.",
+      "Apply basic testing techniques to check program correctness."
+    ],
+    "assessments": [
+      { "name": "Programming Exercises Portfolio", "type": "Portfolio", "weightPercent": 40, "dueDate": "2026-11-27" },
+      { "name": "Mini Project", "type": "Coursework", "weightPercent": 60, "dueDate": "2027-01-15" }
+    ]
+  },
+  {
+    "code": "U24CS205",
+    "title": "Database Systems",
+    "level": 5,
+    "credits": 20,
+    "term": "2026/27 Semester 1",
+    "leader": "Prof. Daniel Okafor",
+    "description": "Covers the design and implementation of relational databases, from conceptual modelling to SQL and normalisation, with an introduction to transactions, indexing and the trade-offs of non-relational data stores.",
+    "learningOutcomes": [
+      "Design a relational schema from a set of requirements using entity-relationship modelling.",
+      "Write SQL queries to create, update and retrieve data, including joins and aggregates.",
+      "Normalise a schema to third normal form and justify the result.",
+      "Explain how transactions and indexing affect consistency and performance."
+    ],
+    "assessments": [
+      { "name": "Database Design Report", "type": "Coursework", "weightPercent": 50, "dueDate": "2026-12-11" },
+      { "name": "Written Examination", "type": "Exam", "weightPercent": 50, "dueDate": "2027-01-20" }
+    ]
+  },
+  {
+    "code": "U24CS310",
+    "title": "Machine Learning",
+    "level": 6,
+    "credits": 20,
+    "term": "2026/27 Semester 2",
+    "leader": "Dr Priya Raman",
+    "description": "Introduces the principles and practice of machine learning, including supervised and unsupervised methods, model evaluation and the ethical issues raised by automated decision-making.",
+    "learningOutcomes": [
+      "Explain the principles behind common supervised and unsupervised learning algorithms.",
+      "Train, tune and evaluate models using appropriate metrics and validation methods.",
+      "Critically assess the ethical and social implications of machine learning systems."
+    ],
+    "assessments": [
+      { "name": "Applied ML Coursework", "type": "Coursework", "weightPercent": 50, "dueDate": "2027-03-19" },
+      { "name": "Research Presentation", "type": "Presentation", "weightPercent": 20, "dueDate": "2027-04-23" },
+      { "name": "Written Examination", "type": "Exam", "weightPercent": 30, "dueDate": "2027-05-24" }
+    ]
+  },
+  {
+    "code": "U24CS150",
+    "title": "Computer Systems Fundamentals",
+    "level": 4,
+    "credits": 20,
+    "term": "2026/27 Semester 2",
+    "leader": "Dr Tom Bennett",
+    "description": "Explores how computers work, from binary representation and logic gates to processor architecture, memory and operating systems.",
+    "learningOutcomes": [],
+    "assessments": [
+      { "name": "Lab Logbook", "type": "Portfolio", "weightPercent": 30, "dueDate": "2027-03-05" },
+      { "name": "Systems Examination", "type": "Exam", "weightPercent": 60, "dueDate": null }
+    ]
+  }
+]

@@ -2,9 +2,21 @@
   "name": "bridgeboard",
   "private": true,
   "description": "Demo: AI browser agent transfers module data from fake SITS to fake Blackboard Ultra",
+  "type": "module",
   "packageManager": "pnpm@11.1.2",
   "engines": {
     "node": ">=20"
   },
-  "scripts": {}
+  "scripts": {
+    "seed": "pnpm --filter @bridgeboard/seed seed",
+    "reset": "pnpm --filter @bridgeboard/seed reset",
+    "layout": "pnpm --filter @bridgeboard/seed layout",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3"
+  }
 }
