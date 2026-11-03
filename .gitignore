@@ -26,3 +26,4 @@ verify/reports/
 .DS_Store
 .vscode/
 .idea/
+next-env.d.ts

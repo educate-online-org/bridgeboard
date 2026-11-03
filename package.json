@@ -8,6 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "seed": "pnpm --filter @bridgeboard/seed seed",
     "reset": "pnpm --filter @bridgeboard/seed reset",
     "layout": "pnpm --filter @bridgeboard/seed layout",
