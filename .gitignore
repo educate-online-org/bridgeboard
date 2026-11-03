@@ -1,0 +1,28 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+dist/
+out/
+*.tsbuildinfo
+
+# env
+.env
+.env.*
+!.env.example
+
+# local data / outputs
+*.db
+*.db-journal
+*.sqlite
+data/
+agent/runs/
+verify/reports/
+
+# logs & os
+*.log
+.DS_Store
+.vscode/
+.idea/

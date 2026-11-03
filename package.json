@@ -1,0 +1,10 @@
+{
+  "name": "bridgeboard",
+  "private": true,
+  "description": "Demo: AI browser agent transfers module data from fake SITS to fake Blackboard Ultra",
+  "packageManager": "pnpm@11.1.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {}
+}
