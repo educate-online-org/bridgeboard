@@ -5,6 +5,7 @@
 > - 2026-11-03: Extraction uses a lenient (nullable) schema and the model is told to return null rather than infer; a strict schema + rules validate afterwards.
 > - 2026-11-03: Layout is stored server-side in each fake app (admin toggle / `pnpm layout v1|v2`), not via `?layout=`. `LAYOUT` is removed from the agent's .env; the agent never knows the layout.
 > - 2026-11-03: Quill content is entered by typing with shortcuts (e.g. `- ` for bullets), not pasted HTML.
+> - 2026-11-09: The agent opens **two browsers**, one per system, each with its own profile and cookies, so SITS and Blackboard are both on screen during a demo.
 > - 2026-11-03: Storage is JSON files (one per fake app). Seed data is Computer Science (3 valid + 1 broken). Branding: "CCCU", text only. Live audience, so add `pnpm preflight`. Partial failure: leave content, mark failed. Re-run: skip courses that already have "Module Information".
 
 ## Goal
