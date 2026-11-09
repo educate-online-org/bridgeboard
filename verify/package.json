@@ -1,0 +1,15 @@
+{
+  "name": "@bridgeboard/verify",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --import tsx --test checks.test.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@bridgeboard/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22"
+  }
+}

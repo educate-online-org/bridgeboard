@@ -13,6 +13,7 @@
     "agent:check-extraction": "tsx agent/src/check-extraction.ts",
     "seed": "pnpm --filter @bridgeboard/seed seed",
     "reset": "pnpm --filter @bridgeboard/seed reset",
+    "verify": "tsx verify/run.ts",
     "layout": "pnpm --filter @bridgeboard/seed layout",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck"
