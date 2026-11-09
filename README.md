@@ -4,7 +4,7 @@ A demo showing an AI browser agent doing university admin setup by hand-off: it 
 
 No real systems, APIs, or student data are involved. Both systems are minimal fake web apps in this repo.
 
-> Status: **milestones 1–3 done**; milestone 4 (agent reads SITS) is built and waiting for a first run with a real OpenAI key. See [Milestones](#milestones).
+> Status: **milestones 1–7 and 9 done**. Everything the agent does has been proven against the real fake apps without the model — the create flow, the Quill output, both layouts, and the verification report. Still to do: one live run (milestones 4, 5 and 8), which is the only part that spends OpenAI tokens. See [Milestones](#milestones).
 
 Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
@@ -51,7 +51,7 @@ pnpm seed              # seed both systems
 | `pnpm seed` | Create `data/` with fresh SITS + BB data (layout v1) ✅ |
 | `pnpm test` / `pnpm typecheck` | Run tests / type checks ✅ |
 | `pnpm dev` | Start fake SITS (3001) and fake BB (3002) ✅ |
-| `pnpm agent:run` | Transfer all valid modules SITS → BB (for now: read + validate SITS only) |
+| `pnpm agent:run` | Transfer all valid modules SITS → BB (read, validate, then create) |
 | `pnpm agent:check-extraction` | Dev check: compare the last run's extracted data with SITS exactly |
 | `pnpm agent:run --module U24CS101` | Transfer a single module |
 | `pnpm verify` | Compare databases; write console + HTML report |
@@ -127,12 +127,16 @@ Nothing here is purely browser-side:
 - [x] 1. Monorepo + shared schema + seed data
 - [x] 2. Fake SITS (v1, then v2)
 - [x] 3. Fake BB (v1, then v2, incl. Quill and review page)
-- [ ] 4. Agent reads SITS correctly for all modules
-- [ ] 5. Agent creates BB content for one module, then all
-- [ ] 6. Validation and flagging
-- [ ] 7. Verification script + HTML report
-- [ ] 8. Layout v2 runs end to end
-- [ ] 9. Reset script, README, polish
+- [ ] 4. Agent reads SITS correctly for all modules — code done, needs a live run
+- [ ] 5. Agent creates BB content for one module, then all — code done, proven in both layouts without the model, needs a live run
+- [x] 6. Validation and flagging
+- [x] 7. Verification script + HTML report
+- [ ] 8. Layout v2 runs end to end — both layouts proven individually, needs the live run from 5
+- [x] 9. Reset script, README, preflight
+
+4, 5 and 8 are the only ones that cost money to check: they are the steps driven by `act()`,
+`observe()` and `extract()`. Everything else — the create flow, typed Quill output, folder
+structure, visibility, verification — is exercised end to end without a single model call.
 
 ## Non-goals
 
