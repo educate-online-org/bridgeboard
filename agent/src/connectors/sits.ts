@@ -1,7 +1,7 @@
 // SITS reader. Every action is described in natural language; no selectors or URLs beyond the start page.
 import { z } from "zod";
 import { RawModuleSchema, validateModule, type RawModule } from "@bridgeboard/shared";
-import { ensure, waitForUrl, type Session } from "../browser";
+import { ensure, waitForUrl, type System } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField } from "./common";
@@ -15,7 +15,7 @@ Rules:
 - dueDate: convert the displayed date to YYYY-MM-DD. If no date is shown for an assessment, return null.
 - level and credits are numbers.`;
 
-export async function loginSits(s: Session, log: RunLog) {
+export async function loginSits(s: System, log: RunLog) {
   await log.step("Open SITS", async () => {
     await s.page.goto(config.sitsUrl);
   });
@@ -27,7 +27,7 @@ export async function loginSits(s: Session, log: RunLog) {
   });
 }
 
-export async function listModuleCodes(s: Session, log: RunLog): Promise<string[]> {
+export async function listModuleCodes(s: System, log: RunLog): Promise<string[]> {
   await openModuleList(s, log);
   return log.step("Read module list", async () => {
     const { data } = await s.stagehand.extract(
@@ -39,7 +39,7 @@ export async function listModuleCodes(s: Session, log: RunLog): Promise<string[]
   });
 }
 
-async function openModuleList(s: Session, log: RunLog, module?: string) {
+async function openModuleList(s: System, log: RunLog, module?: string) {
   await log.step(
     "Open module list",
     async () => {
@@ -54,7 +54,7 @@ async function openModuleList(s: Session, log: RunLog, module?: string) {
  * Open a module's page and extract it. If the result fails validation, take a second look using a
  * screenshot as well, so a module is only flagged after both readings agree something is missing.
  */
-export async function readModule(s: Session, log: RunLog, code: string): Promise<{ raw: RawModule; method: "page" | "page+screenshot" }> {
+export async function readModule(s: System, log: RunLog, code: string): Promise<{ raw: RawModule; method: "page" | "page+screenshot" }> {
   await openModuleList(s, log, code);
   await log.step(
     "Open module details",

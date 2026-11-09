@@ -1,6 +1,6 @@
 // Finding things the way a person does: by what is written on the page. No CSS class selectors,
 // no coordinates, no knowledge of which layout is live — only text, labels and roles.
-import type { Session } from "../browser";
+import type { System } from "../browser";
 
 /** Every element, whether it is visible, what it says, and whether a person can click it. */
 const PRELUDE = `
@@ -14,7 +14,7 @@ const PRELUDE = `
 const q = (v: string) => JSON.stringify(v);
 
 /** Click the first clickable thing whose text or label contains `want`. */
-export async function clickText(s: Session, want: string): Promise<void> {
+export async function clickText(s: System, want: string): Promise<void> {
   const clicked = await s.page.evaluate(`(() => {${PRELUDE}
     const want = ${q(want)}.toLowerCase();
     const hit = els.find((e) => clickable(e) && visible(e) && says(e).toLowerCase().includes(want));
@@ -29,7 +29,7 @@ export async function clickText(s: Session, want: string): Promise<void> {
  * Click an entry in the open pop-up menu. With no `want`, clicks the first entry — which is the
  * "Create / Add content" root item in both layouts, so the caller doesn't have to know its label.
  */
-export async function clickMenuItem(s: Session, want?: string): Promise<void> {
+export async function clickMenuItem(s: System, want?: string): Promise<void> {
   const clicked = await s.page.evaluate(`(() => {${PRELUDE}
     const items = els.filter((e) => inMenu(e) && visible(e));
     const hit = ${want === undefined ? "items[0]" : `items.find((e) => says(e).toLowerCase().includes(${q(want)}.toLowerCase()))`};
@@ -41,7 +41,7 @@ export async function clickMenuItem(s: Session, want?: string): Promise<void> {
 }
 
 /** Is this text anywhere on the page (as a person would read it)? */
-export function hasText(s: Session, want: string): Promise<boolean> {
+export function hasText(s: System, want: string): Promise<boolean> {
   return s.page.evaluate(`document.body.innerText.includes(${q(want)})`);
 }
 
@@ -50,7 +50,7 @@ export function hasText(s: Session, want: string): Promise<boolean> {
  * "is this text on the page" check, a toast saying «Folder created: "X"» does not satisfy it, so we
  * wait for the list itself to be re-rendered.
  */
-export function waitForRowText(s: Session, want: string, timeout = 20_000): Promise<unknown> {
+export function waitForRowText(s: System, want: string, timeout = 20_000): Promise<unknown> {
   return s.page.waitForFunction(
     `(() => {${PRELUDE}
       const want = ${q(want)}.toLowerCase();
@@ -61,12 +61,12 @@ export function waitForRowText(s: Session, want: string, timeout = 20_000): Prom
   );
 }
 
-export function waitForText(s: Session, want: string, timeout = 20_000): Promise<unknown> {
+export function waitForText(s: System, want: string, timeout = 20_000): Promise<unknown> {
   return s.page.waitForFunction(`document.body.innerText.includes(${q(want)})`, undefined, { timeout });
 }
 
 /** The `aria-expanded` state of the toggle whose label contains `want`; null if there is no such toggle. */
-export function isExpanded(s: Session, want: string): Promise<boolean | null> {
+export function isExpanded(s: System, want: string): Promise<boolean | null> {
   return s.page.evaluate(`(() => {${PRELUDE}
     const hit = els.find((e) => visible(e) && e.getAttribute("aria-expanded") !== null && says(e).toLowerCase().includes(${q(want)}.toLowerCase()));
     return hit ? hit.getAttribute("aria-expanded") === "true" : null;
@@ -74,7 +74,7 @@ export function isExpanded(s: Session, want: string): Promise<boolean | null> {
 }
 
 /** Wait until an element with this role is on screen (a side panel or a modal). */
-export function waitForRole(s: Session, role: string, timeout = 20_000): Promise<unknown> {
+export function waitForRole(s: System, role: string, timeout = 20_000): Promise<unknown> {
   return s.page.waitForFunction(
     `(() => {${PRELUDE}
       return els.some((e) => e.getAttribute("role") === ${q(role)} && visible(e));
@@ -85,7 +85,7 @@ export function waitForRole(s: Session, role: string, timeout = 20_000): Promise
 }
 
 /** Wait until nothing with this role is left on screen. */
-export function waitForNoRole(s: Session, role: string, timeout = 20_000): Promise<unknown> {
+export function waitForNoRole(s: System, role: string, timeout = 20_000): Promise<unknown> {
   return s.page.waitForFunction(
     `(() => {${PRELUDE}
       return !els.some((e) => e.getAttribute("role") === ${q(role)} && visible(e));
@@ -96,7 +96,7 @@ export function waitForNoRole(s: Session, role: string, timeout = 20_000): Promi
 }
 
 /** Put the cursor in the rich text editor (the editable area), ready for typing. */
-export async function focusEditor(s: Session, timeout = 20_000): Promise<void> {
+export async function focusEditor(s: System, timeout = 20_000): Promise<void> {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
     const ok = await s.page.evaluate(`(() => {${PRELUDE}

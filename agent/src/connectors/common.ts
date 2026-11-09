@@ -1,11 +1,11 @@
-import type { Session } from "../browser";
+import type { System } from "../browser";
 import { focusEditor } from "./dom";
 
 /**
  * Fill a form field found by natural-language description. observe() returns the element's selector
  * at run time (nothing hardcoded), and the value is typed locally, so secrets never reach the model.
  */
-export async function fillField(s: Session, description: string, value: string) {
+export async function fillField(s: System, description: string, value: string) {
   const { data } = await s.stagehand.observe(`find the ${description}`);
   const target = data[0];
   if (!target) throw new Error(`Could not find the ${description}`);
@@ -17,7 +17,7 @@ export async function fillField(s: Session, description: string, value: string) 
  * formatting ("- " starts a bullet, Enter ends the list). No HTML is pasted.
  * An empty line is a paragraph break.
  */
-export async function typeIntoEditor(s: Session, lines: string[]) {
+export async function typeIntoEditor(s: System, lines: string[]) {
   await focusEditor(s);
   for (const line of lines) {
     if (line) await s.page.type(line, { delay: 4 });

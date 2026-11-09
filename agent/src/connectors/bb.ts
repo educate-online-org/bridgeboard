@@ -2,7 +2,7 @@
 // page, and one natural-language instruction wherever the wording itself changes between layouts
 // (the add-content menu, the save button, the confirmation dialog).
 import { BB_STRUCTURE, assessmentLines, overviewLines, type Module } from "@bridgeboard/shared";
-import { ensure, waitForUrl, type Session } from "../browser";
+import { ensure, waitForUrl, type System } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField, typeIntoEditor } from "./common";
@@ -10,7 +10,7 @@ import { clickMenuItem, clickText, hasText, isExpanded, waitForNoRole, waitForRo
 
 export type SetUpOutcome = "created" | "skipped";
 
-export async function loginBb(s: Session, log: RunLog) {
+export async function loginBb(s: System, log: RunLog) {
   await log.step("Open Blackboard", async () => {
     await s.page.goto(config.bbUrl);
   });
@@ -22,7 +22,7 @@ export async function loginBb(s: Session, log: RunLog) {
   });
 }
 
-export async function openCourse(s: Session, log: RunLog, code: string) {
+export async function openCourse(s: System, log: RunLog, code: string) {
   await log.step(
     "Open the course in Blackboard",
     async () => {
@@ -39,7 +39,7 @@ export async function openCourse(s: Session, log: RunLog, code: string) {
  * Create the module's folder and both documents. Idempotent: if "Module Information" is already
  * there the course is skipped, and a document that already exists is not created twice.
  */
-export async function setUpCourse(s: Session, log: RunLog, m: Module): Promise<SetUpOutcome> {
+export async function setUpCourse(s: System, log: RunLog, m: Module): Promise<SetUpOutcome> {
   const code = m.code;
   if (await hasText(s, BB_STRUCTURE.folder)) {
     log.info(`  ↷ ${code}: “${BB_STRUCTURE.folder}” already exists, leaving the course alone.`);
@@ -63,7 +63,7 @@ export async function setUpCourse(s: Session, log: RunLog, m: Module): Promise<S
   return "created";
 }
 
-async function createDocument(s: Session, log: RunLog, code: string, title: string, lines: string[]) {
+async function createDocument(s: System, log: RunLog, code: string, title: string, lines: string[]) {
   await log.step(
     `Create the “${title}” document`,
     async () => {
@@ -90,7 +90,7 @@ async function createDocument(s: Session, log: RunLog, code: string, title: stri
  * save, in which case the "+" is there but the menu never opens — so check, and ask again once
  * rather than failing the whole step (a step-level retry costs four model calls, this costs one).
  */
-async function addContent(s: Session, where: string, type: "Folder" | "Document") {
+async function addContent(s: System, where: string, type: "Folder" | "Document") {
   for (let attempt = 1; attempt <= 2; attempt++) {
     await openAddMenu(s, where);
     const opened = await waitForRole(s, "menu", 3000).then(() => true, () => false);
@@ -103,11 +103,11 @@ async function addContent(s: Session, where: string, type: "Folder" | "Document"
   throw new Error(`The add-content menu did not open ${where}`);
 }
 
-async function openAddMenu(s: Session, where: string) {
+async function openAddMenu(s: System, where: string) {
   ensure(await s.stagehand.act(`open the menu for adding new content ${where}`), "open the add-content menu");
 }
 
-async function save(s: Session) {
+async function save(s: System) {
   ensure(await s.stagehand.act("click the button that saves the new content in the panel"), "save");
   ensure(await s.stagehand.act("confirm the dialog to finish adding the content"), "confirm");
   await waitForNoRole(s, "dialog"); // panel and confirmation are both gone: the row is on the page
@@ -115,12 +115,12 @@ async function save(s: Session) {
 
 // --- helpers -------------------------------------------------------------------------------------
 
-async function expectPanel(s: Session) {
+async function expectPanel(s: System) {
   await waitForRole(s, "dialog");
 }
 
 /** Expand a folder in the content tree, if it isn't open already (aria-expanded says which). */
-async function openFolder(s: Session, title: string) {
+async function openFolder(s: System, title: string) {
   const open = await isExpanded(s, title);
   if (open === null) throw new Error(`The folder “${title}” is not in the content list`);
   if (!open) await clickText(s, title);

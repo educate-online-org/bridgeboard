@@ -1,27 +1,48 @@
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { localBrowser, Stagehand, type Page } from "@browserbasehq/stagehand";
 import { config } from "./config";
 
-export interface Session {
+/** One system in its own browser window, with its own profile and cookies. */
+export interface System {
   stagehand: Stagehand;
   page: Page;
+}
+
+export interface Session {
+  sits: System;
+  bb: System;
   close: () => Promise<void>;
 }
 
-/** Local Chrome (required: Browserbase cloud browsers can't reach localhost) driven by Stagehand. */
-export async function openSession(): Promise<Session> {
-  const browser = await localBrowser.launch({ headless: config.headless, viewport: { width: 1400, height: 900 } });
+/**
+ * Two systems, two browsers. Each gets its own profile directory, so the logins and cookies are
+ * genuinely separate (as they would be for someone with SITS in one window and Blackboard in
+ * another), and both stay on screen during a run. Browserbase cloud browsers can't reach localhost,
+ * so this is local Chrome.
+ */
+async function openSystem(name: "sits" | "bb"): Promise<{ system: System; close: () => Promise<void> }> {
+  const browser = await localBrowser.launch({
+    headless: config.headless,
+    viewport: { width: 1400, height: 900 },
+    userDataDir: join(tmpdir(), `bridgeboard-chrome-${name}-${process.pid}`),
+  });
   const stagehand = await Stagehand.create({
     browser,
     model: { modelName: config.modelName, apiKey: config.apiKey },
   });
   const [page] = await browser.context.pages();
-  if (!page) throw new Error("No browser page available");
+  if (!page) throw new Error(`No browser page available for ${name}`);
+  return { system: { stagehand, page }, close: async () => browser.close().catch(() => {}) };
+}
+
+export async function openSession(): Promise<Session> {
+  const [sits, bb] = await Promise.all([openSystem("sits"), openSystem("bb")]);
   return {
-    stagehand,
-    page,
+    sits: sits.system,
+    bb: bb.system,
     close: async () => {
-      await stagehand.close().catch(() => {});
-      await browser.close().catch(() => {});
+      await Promise.all([sits.close(), bb.close()]);
     },
   };
 }

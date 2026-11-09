@@ -106,7 +106,7 @@ Demo logins (fake, hardcoded):
 Nothing here is purely browser-side:
 
 - **Fake SITS / fake BB** are Next.js apps with a server part (pages, login sessions, their own SQLite/JSON data, the stored layout setting) and a browser part (the UI, Quill editor in BB).
-- **Agent** is a Node process. It opens a real (local) browser via Stagehand/Playwright and only interacts with the fake systems through that browser, like a human would. It never touches their databases.
+- **Agent** is a Node process. It opens **two** real (local) browsers via Stagehand/Playwright — one for SITS, one for Blackboard, each with its own profile and cookies — and only interacts with the fake systems through those browsers, like a human with both windows open. Neither window is ever navigated to the other system, so SITS stays on screen while Blackboard is being filled in. It never touches their databases.
 - **Verify** is a Node script that reads both apps' databases directly. No browser involved.
 
 ## Key design rules
