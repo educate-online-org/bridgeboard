@@ -1,8 +1,11 @@
 // pnpm agent:run [--module CODE]
-// Milestone 4: log into SITS, read every module, validate. BB writing comes in milestone 5.
-import { validateModule } from "@bridgeboard/shared";
+// Read every module from SITS, validate it, then set up the matching BB course. Nothing is created
+// for a module that fails validation, and a failure part-way through leaves what was created behind
+// (hidden) and marks the module failed.
+import { validateModule, type Module, type RawModule } from "@bridgeboard/shared";
 import { openSession } from "./browser";
 import { config } from "./config";
+import { loginBb, openCourse, setUpCourse } from "./connectors/bb";
 import { listModuleCodes, loginSits, readModule } from "./connectors/sits";
 import { RunLog, isFatal, message } from "./log";
 
@@ -12,21 +15,55 @@ const only = args.includes("--module") ? args[args.indexOf("--module") + 1] : un
 const log = new RunLog({ model: config.modelName, sitsUrl: config.sitsUrl, bbUrl: config.bbUrl, module: only ?? "all" });
 const session = await openSession();
 
+/** A module that passed validation, with the extraction metadata the log wants. */
+interface Ready {
+  module: Module;
+  extracted: RawModule;
+  extractedWith: "page" | "page+screenshot";
+}
+
 try {
   log.info(`SITS → BB transfer (model ${config.modelName}${only ? `, module ${only}` : ""})\n`);
+
+  // 1. Read and validate everything first: a bad module must never leave half a course behind.
   await loginSits(session, log);
   const codes = only ? [only] : await listModuleCodes(session, log);
   log.info(`\nModules to process: ${codes.join(", ")}\n`);
 
+  const ready: Ready[] = [];
   for (const code of codes) {
     try {
       const { raw, method } = await readModule(session, log, code);
       const result = validateModule(raw);
-      if (result.ok) log.setModule(code, { status: "valid", flags: [], extracted: raw, extractedWith: method });
-      else log.flag(code, result.flags, { extracted: raw, extractedWith: method });
+      if (result.ok) {
+        ready.push({ module: result.module, extracted: raw, extractedWith: method });
+        log.setModule(code, { status: "valid", flags: [], extracted: raw, extractedWith: method });
+      } else {
+        log.flag(code, result.flags, { extracted: raw, extractedWith: method });
+      }
     } catch (err) {
       if (isFatal(err)) throw err; // account problem: stop the run, don't fail every module
       log.setModule(code, { status: "failed", flags: [], error: message(err) });
+    }
+  }
+
+  // 2. Write to Blackboard, one course at a time.
+  if (ready.length > 0) {
+    log.info(`\nSetting up ${ready.length} course(s) in Blackboard\n`);
+    await loginBb(session, log);
+  }
+  for (const { module } of ready) {
+    const code = module.code;
+    try {
+      await openCourse(session, log, code);
+      const outcome = await setUpCourse(session, log, module);
+      const previous = log.modules[code] ?? { status: "valid" as const, flags: [] };
+      log.setModule(code, { ...previous, status: outcome === "skipped" ? "skipped" : "created" });
+    } catch (err) {
+      if (isFatal(err)) throw err;
+      // Content created so far stays (it is hidden); the module is reported as failed.
+      const previous = log.modules[code] ?? { status: "valid" as const, flags: [] };
+      log.setModule(code, { ...previous, status: "failed", error: message(err) });
     }
   }
 } catch (err) {

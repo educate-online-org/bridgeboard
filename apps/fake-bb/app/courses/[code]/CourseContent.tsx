@@ -322,21 +322,24 @@ function CreatePanel(props: {
   const cancelBtn = <button key="cancel" onClick={props.onClose}>{t.cancel}</button>;
 
   return (
-    <aside className="panel" aria-label={t.newTitle(type)}>
-      <header className="panel-head">
-        <h2>{t.newTitle(type)}</h2>
-        <button className="close" aria-label="Close" onClick={props.onClose}>×</button>
-      </header>
-      <div className="panel-body">
-        <p className="muted">Location: {where}</p>
-        {order}
-        {error && <p className="error">{error}</p>}
-      </div>
-      <footer className="panel-foot">{layout === "v1" ? [cancelBtn, saveBtn] : [saveBtn, cancelBtn]}</footer>
+    <>
+      <aside className="panel" role="dialog" aria-modal="true" aria-label={t.newTitle(type)}>
+        <header className="panel-head">
+          <h2>{t.newTitle(type)}</h2>
+          <button className="close" aria-label="Close" onClick={props.onClose}>×</button>
+        </header>
+        <div className="panel-body">
+          <p className="muted">Location: {where}</p>
+          {order}
+          {error && <p className="error">{error}</p>}
+        </div>
+        <footer className="panel-foot">{layout === "v1" ? [cancelBtn, saveBtn] : [saveBtn, cancelBtn]}</footer>
+      </aside>
 
+      {/* Separate dialog, not nested in the panel: the panel and the confirmation are two surfaces. */}
       {confirming && (
         <div className="modal-backdrop">
-          <div className="modal" role="dialog" aria-modal="true" aria-label={t.confirmTitle}>
+          <div className="modal" role="alertdialog" aria-modal="true" aria-label={t.confirmTitle}>
             <h3>{t.confirmTitle}</h3>
             <p>
               “{title.trim()}” will be added to {where}. Visibility: <strong>{VIS_TEXT[visibility]}</strong>.
@@ -348,6 +351,6 @@ function CreatePanel(props: {
           </div>
         </div>
       )}
-    </aside>
+    </>
   );
 }
