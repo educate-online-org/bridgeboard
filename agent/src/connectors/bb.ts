@@ -6,7 +6,7 @@ import { ensure, waitForUrl, type Session } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField, typeIntoEditor } from "./common";
-import { clickMenuItem, clickText, hasText, isExpanded, waitForNoRole, waitForRole, waitForRowText } from "./dom";
+import { clickMenuItem, clickText, hasText, isExpanded, waitForNoRole, waitForRole, waitForRowText, waitForText } from "./dom";
 
 export type SetUpOutcome = "created" | "skipped";
 
@@ -27,6 +27,7 @@ export async function openCourse(s: Session, log: RunLog, code: string) {
     "Open the course in Blackboard",
     async () => {
       await clickText(s, "courses");
+      await waitForText(s, code); // the course list has to be on screen before we look for the code
       await clickText(s, code);
       await waitForUrl(s.page, (u) => u.includes(`/courses/${code}`));
     },
@@ -48,9 +49,7 @@ export async function setUpCourse(s: Session, log: RunLog, m: Module): Promise<S
   await log.step(
     `Create the “${BB_STRUCTURE.folder}” folder`,
     async () => {
-      await openAddMenu(s, "at the top level of the course");
-      await clickMenuItem(s);
-      await clickMenuItem(s, "Folder");
+      await addContent(s, "at the top level of the course", "Folder");
       await expectPanel(s);
       await fillField(s, "title field of the new content panel", BB_STRUCTURE.folder);
       await save(s);
@@ -73,9 +72,7 @@ async function createDocument(s: Session, log: RunLog, code: string, title: stri
         return;
       }
       await openFolder(s, BB_STRUCTURE.folder);
-      await openAddMenu(s, `inside the folder “${BB_STRUCTURE.folder}”`);
-      await clickMenuItem(s);
-      await clickMenuItem(s, "Document");
+      await addContent(s, `inside the folder “${BB_STRUCTURE.folder}”`, "Document");
       await expectPanel(s);
       await fillField(s, "title field of the new content panel", title);
       await typeIntoEditor(s, lines);
@@ -87,6 +84,24 @@ async function createDocument(s: Session, log: RunLog, code: string, title: stri
 }
 
 // --- steps where the wording changes with the layout: described, not hardcoded --------------------
+
+/**
+ * Open the add-content menu and pick a type. The page can still be refreshing after the previous
+ * save, in which case the "+" is there but the menu never opens — so check, and ask again once
+ * rather than failing the whole step (a step-level retry costs four model calls, this costs one).
+ */
+async function addContent(s: Session, where: string, type: "Folder" | "Document") {
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    await openAddMenu(s, where);
+    const opened = await waitForRole(s, "menu", 3000).then(() => true, () => false);
+    if (opened) {
+      await clickMenuItem(s); // the "Create / Add content" root entry, whatever it is called
+      await clickMenuItem(s, type);
+      return;
+    }
+  }
+  throw new Error(`The add-content menu did not open ${where}`);
+}
 
 async function openAddMenu(s: Session, where: string) {
   ensure(await s.stagehand.act(`open the menu for adding new content ${where}`), "open the add-content menu");
