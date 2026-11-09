@@ -6,7 +6,7 @@ import { ensure, waitForUrl, type System } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField, typeIntoEditor } from "./common";
-import { clickMenuItem, clickText, hasText, isExpanded, waitForNoRole, waitForRole, waitForRowText, waitForText } from "./dom";
+import { clickMenuItem, clickText, hasDialogSaying, hasMenuItem, hasText, isExpanded, waitForClickable, waitForNoRole, waitForRole, waitForRowText } from "./dom";
 
 export type SetUpOutcome = "created" | "skipped";
 
@@ -27,7 +27,7 @@ export async function openCourse(s: System, log: RunLog, code: string) {
     "Open the course in Blackboard",
     async () => {
       await clickText(s, "courses");
-      await waitForText(s, code); // the course list has to be on screen before we look for the code
+      await waitForClickable(s, code); // a *link* with the code, not the code in the header we are leaving
       await clickText(s, code);
       await waitForUrl(s.page, (u) => u.includes(`/courses/${code}`));
     },
@@ -93,14 +93,25 @@ async function createDocument(s: System, log: RunLog, code: string, title: strin
 async function addContent(s: System, where: string, type: "Folder" | "Document") {
   for (let attempt = 1; attempt <= 2; attempt++) {
     await openAddMenu(s, where);
+    // The model sometimes clicks the "+" and the menu's root entry in one go, which leaves the
+    // panel already open. If it opened the panel we wanted, there is nothing left to pick.
+    if (await hasDialogSaying(s, type)) return;
     const opened = await waitForRole(s, "menu", 3000).then(() => true, () => false);
     if (opened) {
-      await clickMenuItem(s); // the "Create / Add content" root entry, whatever it is called
-      await clickMenuItem(s, type);
+      await pickType(s, type);
       return;
     }
   }
   throw new Error(`The add-content menu did not open ${where}`);
+}
+
+/**
+ * Pick a type from the open menu. Only click the root entry ("Create / Add content") when the types
+ * are not already showing: after an eager act() the menu is already on the second step.
+ */
+export async function pickType(s: System, type: "Folder" | "Document") {
+  if (!(await hasMenuItem(s, type))) await clickMenuItem(s);
+  await clickMenuItem(s, type);
 }
 
 async function openAddMenu(s: System, where: string) {

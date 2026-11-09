@@ -40,6 +40,38 @@ export async function clickMenuItem(s: System, want?: string): Promise<void> {
   if (!clicked) throw new Error(`No menu entry${want === undefined ? "" : ` says “${want}”`}`);
 }
 
+/** Is there a pop-up menu entry whose text contains `want` right now? */
+export function hasMenuItem(s: System, want: string): Promise<boolean> {
+  return s.page.evaluate(`(() => {${PRELUDE}
+    const want = ${q(want)}.toLowerCase();
+    return els.some((e) => inMenu(e) && visible(e) && says(e).toLowerCase().includes(want));
+  })()`);
+}
+
+/** Is a side panel or modal open, and does it say `want` (e.g. "Document")? */
+export function hasDialogSaying(s: System, want: string): Promise<boolean> {
+  return s.page.evaluate(`(() => {${PRELUDE}
+    const want = ${q(want)}.toLowerCase();
+    return els.some((e) => e.getAttribute("role") === "dialog" && visible(e) && says(e).toLowerCase().includes(want));
+  })()`);
+}
+
+/**
+ * Wait until `clickText` would find something: a visible clickable whose text contains `want`.
+ * Waiting for the text alone is not enough — the page we are trying to leave often still shows it
+ * in a heading, which made the agent click a link that was no longer there.
+ */
+export function waitForClickable(s: System, want: string, timeout = 20_000): Promise<unknown> {
+  return s.page.waitForFunction(
+    `(() => {${PRELUDE}
+      const want = ${q(want)}.toLowerCase();
+      return els.some((e) => clickable(e) && visible(e) && says(e).toLowerCase().includes(want));
+    })()`,
+    undefined,
+    { timeout },
+  );
+}
+
 /** Is this text anywhere on the page (as a person would read it)? */
 export function hasText(s: System, want: string): Promise<boolean> {
   return s.page.evaluate(`document.body.innerText.includes(${q(want)})`);

@@ -4,7 +4,7 @@ A demo showing an AI browser agent doing university admin setup by hand-off: it 
 
 No real systems, APIs, or student data are involved. Both systems are minimal fake web apps in this repo.
 
-> Status: **milestones 1–7 and 9 done**. Everything the agent does has been proven against the real fake apps without the model — the create flow, the Quill output, both layouts, and the verification report. Still to do: one live run (milestones 4, 5 and 8), which is the only part that spends OpenAI tokens. See [Milestones](#milestones).
+> Status: **all milestones done.** Live runs have read all four modules from SITS (extraction matched exactly, including the deliberately broken one), set up the three valid modules in Blackboard, flagged and skipped the broken one, and done the same under layout v2 in a second browser. `verify` reports 3/3 matched. See [Milestones](#milestones).
 
 Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 
@@ -127,16 +127,17 @@ Nothing here is purely browser-side:
 - [x] 1. Monorepo + shared schema + seed data
 - [x] 2. Fake SITS (v1, then v2)
 - [x] 3. Fake BB (v1, then v2, incl. Quill and review page)
-- [ ] 4. Agent reads SITS correctly for all modules — code done, needs a live run
-- [ ] 5. Agent creates BB content for one module, then all — code done, proven in both layouts without the model, needs a live run
-- [x] 6. Validation and flagging
+- [x] 4. Agent reads SITS correctly for all modules (extraction matched SITS exactly for all 4)
+- [x] 5. Agent creates BB content (folder + both documents, hidden, for all 3 valid modules)
+- [x] 6. Validation and flagging (broken module flagged with all three reasons, nothing created)
 - [x] 7. Verification script + HTML report
-- [ ] 8. Layout v2 runs end to end — both layouts proven individually, needs the live run from 5
+- [x] 8. Layout v2 runs end to end (created and verified with the two-browser agent under v2)
 - [x] 9. Reset script, README, preflight
 
-4, 5 and 8 are the only ones that cost money to check: they are the steps driven by `act()`,
-`observe()` and `extract()`. Everything else — the create flow, typed Quill output, folder
-structure, visibility, verification — is exercised end to end without a single model call.
+The model-driven steps (`act()`, `observe()`, `extract()`) are the only ones that cost money; the
+rest — the create flow, typed Quill output, folder structure, visibility, verification — is
+exercised end to end without a single model call, which is how each change was checked before
+being paid for.
 
 ## Non-goals
 
