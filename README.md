@@ -99,6 +99,7 @@ Demo logins (fake, hardcoded):
 | Re-runs | If the course already has "Module Information", skip the module and log it; `pnpm reset` to redo |
 | Quill | Typing with shortcuts, no HTML pasting; kept as one swappable "enter formatted content" step |
 | Real systems (later) | Agent built so the fake systems can be swapped for CCCU's real ones; real BB verification via REST API. Login/SSO out of scope for now. Access needed: [`docs/CCCU_ACCESS.md`](docs/CCCU_ACCESS.md) |
+| UI fidelity | Fake BB copies real Ultra where it costs nothing (tab strip, banner chrome, item rows, per-row visibility pill). Deliberate differences are listed in [`docs/UI_REFERENCES.md`](docs/UI_REFERENCES.md) under **[ours diverges]**. |
 
 ## How the pieces run
 
@@ -119,7 +120,7 @@ Nothing here is purely browser-side:
 - **Retries:** on step failure, re-observe and retry up to 2 times, then fail that module gracefully.
 - **Verification uses ground truth:** `verify/` reads the SITS DB directly, never the agent's extracted data.
 - **Swappable LLM:** OpenAI by default; the model is set by `MODEL_NAME` only, so another provider can be swapped in without code changes.
-- **Hidden by default:** all agent-created content is "Hidden from students".
+- **Hidden by default:** all agent-created content is "Hidden from students". This is not a preference — it is how universities already work. A public Blackboard Ultra guide states it for its own staff: the "Grading, feedback, and verification" folder is hidden from students and must always remain so, as should all items stored within it, and if items are made available "it may constitute a data breach" to be reported to the Data Protection Office ([Northampton, NILE](docs/UI_REFERENCES.md)). Unpublished content is the safe default; publishing is a human decision. Visibility can also be flipped per item from the row pill (as in Ultra), and `/admin/review` is the only place a human publishes.
 
 ## Milestones
 

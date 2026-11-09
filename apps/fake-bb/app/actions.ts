@@ -64,6 +64,22 @@ export async function createItem(input: NewItem): Promise<{ ok: true } | { ok: f
   return { ok: true };
 }
 
+/** Visibility can be changed on an existing item, the way Ultra's per-row pill works. */
+export async function setVisibility(input: {
+  id: string;
+  visibility: Visibility;
+}): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireSession();
+  const db = readDb();
+  const item = db.items.find((i) => i.id === input.id);
+  if (!item) return { ok: false, error: "Item not found." };
+  item.visibility = input.visibility === "visible" ? "visible" : "hidden";
+  writeDb(db);
+  revalidatePath(`/courses/${item.courseCode}`);
+  revalidatePath("/admin/review");
+  return { ok: true };
+}
+
 export async function publishItem(formData: FormData) {
   await requireSession();
   const db = readDb();

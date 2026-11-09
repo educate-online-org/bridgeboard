@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { BbCourse, BbItem, Layout, Visibility } from "@bridgeboard/shared";
-import { createItem } from "../../actions";
+import { createItem, setVisibility } from "../../actions";
 import { QuillEditor } from "./QuillEditor";
 
 type ItemType = BbItem["type"];
@@ -30,6 +30,16 @@ const TEXT = {
 } as const;
 
 const VIS_TEXT: Record<Visibility, string> = { hidden: "Hidden from students", visible: "Visible to students" };
+const VIS_OPTIONS: Visibility[] = ["visible", "hidden"];
+
+// Real Ultra shows a one-line summary under the title; ours comes from the document body.
+const summary = (item: BbItem) =>
+  item.bodyHtml
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 110);
 
 const delay = () => new Promise((r) => setTimeout(r, 300 + Math.random() * 500));
 
@@ -37,6 +47,7 @@ export function CourseContent({ course, items, layout }: { course: BbCourse; ite
   const t = TEXT[layout];
   const router = useRouter();
   const [menuFor, setMenuFor] = useState<{ parent: BbItem | null; step: 1 | 2 } | null>(null);
+  const [visFor, setVisFor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [panel, setPanel] = useState<Panel | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -47,6 +58,13 @@ export function CourseContent({ course, items, layout }: { course: BbCourse; ite
     const id = setTimeout(() => setToast(null), 3500);
     return () => clearTimeout(id);
   }, [toast]);
+
+  async function changeVisibility(id: string, visibility: Visibility) {
+    setVisFor(null);
+    const res = await setVisibility({ id, visibility });
+    if (res.ok) router.refresh();
+    else setToast(res.error);
+  }
 
   async function openPanel(next: Panel) {
     setMenuFor(null);
@@ -105,15 +123,46 @@ export function CourseContent({ course, items, layout }: { course: BbCourse; ite
     return (
       <li className="row" key={item.id}>
         <div className="row-main">
+          <span className="grip" aria-hidden>⋮⋮</span>
           <span className={`icon ${item.type}`} aria-hidden>{item.type === "folder" ? "📁" : "📄"}</span>
-          {item.type === "folder" ? (
-            <button className="row-title" aria-expanded={isOpen} onClick={() => toggle(item.id)}>
-              {item.title} <span className="chev">{isOpen ? "▾" : "▸"}</span>
+          <div className="row-text">
+            {item.type === "folder" ? (
+              <button className="row-title" aria-expanded={isOpen} onClick={() => toggle(item.id)}>
+                {item.title} <span className="chev">{isOpen ? "▾" : "▸"}</span>
+              </button>
+            ) : (
+              <button className="row-title" onClick={() => openPanel({ mode: "view", item })}>{item.title}</button>
+            )}
+            {summary(item) && <div className="row-sub muted">{summary(item)}</div>}
+          </div>
+          {/* Visibility is set on the row, like Ultra, not only in the create panel. */}
+          <span className="vis-wrap">
+            <button
+              className={`badge badge-btn ${item.visibility}`}
+              aria-haspopup="menu"
+              aria-expanded={visFor === item.id}
+              title={t.visLabel}
+              onClick={() => setVisFor(visFor === item.id ? null : item.id)}
+            >
+              {VIS_TEXT[item.visibility]} <span aria-hidden>▾</span>
             </button>
-          ) : (
-            <button className="row-title" onClick={() => openPanel({ mode: "view", item })}>{item.title}</button>
-          )}
-          <span className={`badge ${item.visibility}`}>{VIS_TEXT[item.visibility]}</span>
+            {visFor === item.id && (
+              <div className="vis-menu" role="menu">
+                <div className="menu-head">{t.visLabel}</div>
+                {VIS_OPTIONS.map((v) => (
+                  <button
+                    key={v}
+                    role="menuitemradio"
+                    aria-checked={item.visibility === v}
+                    disabled={item.visibility === v}
+                    onClick={() => changeVisibility(item.id, v)}
+                  >
+                    {VIS_TEXT[v]}
+                  </button>
+                ))}
+              </div>
+            )}
+          </span>
           {layout === "v2" && item.type === "folder" && plusButton(item, t.folderPlusLabel)}
         </div>
         {item.type === "folder" && isOpen && (
@@ -136,17 +185,26 @@ export function CourseContent({ course, items, layout }: { course: BbCourse; ite
           <div className="course-code">{course.courseCode}</div>
           <h1>{course.title}</h1>
         </div>
-        {layout === "v2" && <div className="head-actions">{plusButton(null, t.plusLabel)}</div>}
+        <div className="head-actions">
+          {/* Chrome only: nothing behind these, they are here to look like Ultra. */}
+          <span className="chrome-link">👁 Student Preview</span>
+          <span className="chrome-link">⚙ Course Settings</span>
+          {layout === "v2" && plusButton(null, t.plusLabel)}
+        </div>
       </header>
       <nav className="tabs">
-        <span className="on">Course Content</span>
+        <span className="on">Content</span>
         <span>Calendar</span>
+        <span>Announcements</span>
         <span>Discussions</span>
         <span>Gradebook</span>
         <span>Messages</span>
+        <span>Analytics</span>
+        <span>Groups</span>
       </nav>
 
       <section className="content">
+        <h2 className="content-head">Course Content</h2>
         {layout === "v1" && <div className="plus-line">{plusButton(null, t.plusLabel)}</div>}
         <ul>
           {children(null).map(renderRow)}

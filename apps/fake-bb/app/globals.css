@@ -51,22 +51,34 @@ input, select { font: inherit; padding: 8px 10px; border: 1px solid #c9c9c9; bor
 
 /* course page */
 .course { min-height: 100vh; }
-.course-head { background: #fff; padding: 24px 36px 12px; display: flex; justify-content: space-between; align-items: flex-end; }
-.tabs { background: #fff; display: flex; gap: 26px; padding: 0 36px; border-bottom: 1px solid var(--line); }
-.tabs span { padding: 10px 0; color: var(--muted); }
+.course-head { background: #fff; padding: 24px 36px 12px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }
+.head-actions { display: flex; align-items: center; gap: 16px; }
+.chrome-link { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.tabs { background: #fff; display: flex; gap: 26px; padding: 0 36px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.tabs span { padding: 10px 0; color: var(--muted); white-space: nowrap; }
 .tabs .on { color: var(--ink); border-bottom: 3px solid var(--accent); font-weight: 600; }
 .content { margin: 24px 36px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 8px 20px 16px; }
+.content-head { font-size: 18px; font-weight: 600; margin: 12px 0 4px; }
 .content ul, .folder-body ul { list-style: none; margin: 0; padding: 0; }
 .row { border-bottom: 1px solid var(--line); }
 .row:last-child { border-bottom: 0; }
 .row-main { display: flex; align-items: center; gap: 10px; padding: 12px 0; }
+.grip { color: #c9c9c9; font-size: 13px; letter-spacing: -2px; user-select: none; }
+.row-text { min-width: 0; }
+.row-sub { font-size: 13px; margin-top: 2px; }
 .row-title { border: 0; background: none; padding: 0; font-weight: 600; font-size: 15px; color: var(--ink); text-align: left; }
 .row-title:hover { color: var(--accent); text-decoration: underline; }
 .chev { color: var(--muted); }
 .icon { width: 28px; text-align: center; }
-.badge { margin-left: auto; font-size: 12px; padding: 2px 10px; border-radius: 999px; }
+.vis-wrap { margin-left: auto; position: relative; }
+.badge { font-size: 12px; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.badge-btn { border: 0; }
 .badge.hidden { background: #fff1d6; color: var(--warn); }
 .badge.visible { background: #e2f5ea; color: var(--ok); }
+.vis-menu { position: absolute; top: 30px; right: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 190px; padding: 6px 0; z-index: 20; }
+.vis-menu button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; padding: 8px 16px; font-size: 13px; }
+.vis-menu button:hover:not(:disabled) { background: var(--accent-soft); }
+.vis-menu button:disabled { font-weight: 600; opacity: 1; }
 .folder-body { margin: 0 0 12px 38px; padding-left: 14px; border-left: 2px solid var(--accent-soft); }
 
 /* "+" and menu */
