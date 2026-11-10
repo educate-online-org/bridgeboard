@@ -27,7 +27,7 @@ Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 | `packages/shared` | Shared TypeScript types, Zod schemas, the document text builders | — |
 | `verify/` | Compares the SITS database against the BB database; console + HTML report | — |
 | `seed/` | Seed data for both systems (including one deliberately broken module) | — |
-| `docs/` | Project brief, UI references, access checklist, data flow / DPIA draft | — |
+| `docs/` | Brief, UI references, access checklist, pilot scope, data flow / DPIA draft | — |
 
 ## Setup
 
