@@ -11,6 +11,7 @@
     "dev": "pnpm --parallel --filter \"./apps/*\" dev",
     "agent:run": "tsx agent/src/run.ts",
     "agent:check-extraction": "tsx agent/src/check-extraction.ts",
+    "agent:egress": "tsx agent/src/inspect-egress.ts",
     "seed": "pnpm --filter @bridgeboard/seed seed",
     "reset": "pnpm --filter @bridgeboard/seed reset",
     "verify": "tsx verify/run.ts",

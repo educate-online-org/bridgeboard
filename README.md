@@ -51,6 +51,7 @@ pnpm preflight         # check the setup before a run
 | `pnpm agent:run` | Transfer all valid modules: read and validate SITS, then create in Blackboard |
 | `pnpm agent:run --module U24CS101` | Transfer a single module |
 | `pnpm agent:check-extraction` | Dev check: compare the last run's extracted data with SITS exactly |
+| `pnpm agent:egress` | Dev check: show exactly what would be sent to the model provider for a page (no model calls) |
 | `pnpm verify` | Compare the two databases; write the console table and HTML report |
 | `pnpm layout v1` / `pnpm layout v2` | Switch the UI layout of both fake systems |
 | `pnpm test` / `pnpm typecheck` | Run tests / type checks |

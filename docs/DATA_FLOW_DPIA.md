@@ -52,6 +52,8 @@ Model calls per run, for scale: 2 `observe()` per login, 1 `act()` per navigatio
 
 ## 4. What is and is not redacted
 
+The mechanics are measured, not assumed: see [`LLM_DATA_EGRESS.md`](LLM_DATA_EGRESS.md). A module page renders to a **3.7k-character accessibility tree (~930 tokens)** containing the module leader's name and the full module content; `pnpm agent:egress` reproduces it with no model call so a reviewer can inspect the exact payload.
+
 - **Nothing is redacted today.** Whatever is on the page inside the snapshot goes to the model, including module leader names.
 - Credentials are not sent because they are typed by keyboard into the login form and the agent never observes or screenshots the login page. **This invariant must be preserved**: adding a screenshot "for debugging" inside the login step would leak a password.
 - No filtering, masking or field-level allowlist exists in the current code. That is the main gap this document exposes.
