@@ -26,6 +26,8 @@ export const config = {
   allowScreenshots: process.env.ALLOW_SCREENSHOTS !== "false",
   // Seconds to wait before the browser windows open, so a screen recording can be started first.
   startDelayMs: Number(process.env.START_DELAY_MS ?? 0) || 0,
+  // Ring, pointer and caption drawn over the page so a screen recording shows what the agent does.
+  demoOverlay: process.env.DEMO_OVERLAY !== "false",
   // Fake-system defaults; real systems would supply their own credentials.
   sits: { username: process.env.SITS_USERNAME ?? "sits_admin", password: process.env.SITS_PASSWORD ?? "demo123" },
   bb: { username: process.env.BB_USERNAME ?? "bb_admin", password: process.env.BB_PASSWORD ?? "demo123" },

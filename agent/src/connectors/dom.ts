@@ -19,6 +19,8 @@ export async function clickText(s: System, want: string): Promise<void> {
     const want = ${q(want)}.toLowerCase();
     const hit = els.find((e) => clickable(e) && visible(e) && says(e).toLowerCase().includes(want));
     if (!hit) return false;
+    const r = hit.getBoundingClientRect();
+    window.__bbOverlay && window.__bbOverlay.target({ x: r.x, y: r.y, width: r.width, height: r.height }, ${q(want)});
     hit.click();
     return true;
   })()`);
@@ -34,6 +36,8 @@ export async function clickMenuItem(s: System, want?: string): Promise<void> {
     const items = els.filter((e) => inMenu(e) && visible(e));
     const hit = ${want === undefined ? "items[0]" : `items.find((e) => says(e).toLowerCase().includes(${q(want)}.toLowerCase()))`};
     if (!hit) return false;
+    const r = hit.getBoundingClientRect();
+    window.__bbOverlay && window.__bbOverlay.target({ x: r.x, y: r.y, width: r.width, height: r.height }, ${q(want ?? "menu")});
     hit.click();
     return true;
   })()`);
@@ -142,6 +146,8 @@ export async function focusEditor(s: System, timeout = 20_000): Promise<void> {
     const ok = await s.page.evaluate(`(() => {${PRELUDE}
       const ed = els.find((e) => visible(e) && e.getAttribute("contenteditable") === "true");
       if (!ed) return false;
+      const r = ed.getBoundingClientRect();
+      window.__bbOverlay && window.__bbOverlay.target({ x: r.x, y: r.y, width: r.width, height: r.height }, "editor");
       ed.focus();
       ed.click();
       return true;

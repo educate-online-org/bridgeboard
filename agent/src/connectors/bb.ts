@@ -6,6 +6,7 @@ import { ensure, waitForUrl, type System } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField, typeIntoEditor } from "./common";
+import { caption, ensureOverlay } from "../overlay";
 import { clickMenuItem, clickText, hasDialogSaying, hasMenuItem, hasText, isExpanded, waitForClickable, waitForNoRole, waitForRole, waitForRowText } from "./dom";
 
 export type SetUpOutcome = "created" | "skipped";
@@ -19,6 +20,7 @@ export async function loginBb(s: System, log: RunLog) {
     await fillField(s, "password input on the login form", config.bb.password);
     await clickText(s, "sign in");
     await waitForUrl(s.page, (u) => !u.includes("/login"));
+    await ensureOverlay(s);
   });
 }
 
@@ -30,6 +32,7 @@ export async function openCourse(s: System, log: RunLog, code: string) {
       await waitForClickable(s, code); // a *link* with the code, not the code in the header we are leaving
       await clickText(s, code);
       await waitForUrl(s.page, (u) => u.includes(`/courses/${code}`));
+      await ensureOverlay(s);
     },
     { module: code },
   );
@@ -49,6 +52,7 @@ export async function setUpCourse(s: System, log: RunLog, m: Module): Promise<Se
   await log.step(
     `Create the “${BB_STRUCTURE.folder}” folder`,
     async () => {
+      await caption(s, `Creating the folder “${BB_STRUCTURE.folder}”`);
       await addContent(s, "at the top level of the course", "Folder");
       await expectPanel(s);
       await fillField(s, "title field of the new content panel", BB_STRUCTURE.folder);
@@ -71,11 +75,13 @@ async function createDocument(s: System, log: RunLog, code: string, title: strin
         log.info(`  ↷ “${title}” already exists, not created again.`);
         return;
       }
+      await caption(s, `Writing the document “${title}”`);
       await openFolder(s, BB_STRUCTURE.folder);
       await addContent(s, `inside the folder “${BB_STRUCTURE.folder}”`, "Document");
       await expectPanel(s);
       await fillField(s, "title field of the new content panel", title);
       await typeIntoEditor(s, lines);
+      await caption(s, `Saving “${title}” — hidden from students`);
       await save(s);
       await waitForRowText(s, title);
     },

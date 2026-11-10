@@ -5,6 +5,7 @@ import { ensure, waitForUrl, type System } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField } from "./common";
+import { caption } from "../overlay";
 
 const EXTRACT_INSTRUCTION = `Extract the details of the module shown on this page.
 Rules:
@@ -28,6 +29,7 @@ export async function loginSits(s: System, log: RunLog) {
 }
 
 export async function listModuleCodes(s: System, log: RunLog): Promise<string[]> {
+  await caption(s, "Reading the module list from SITS");
   await openModuleList(s, log);
   return log.step("Read module list", async () => {
     const { data } = await s.stagehand.extract(
@@ -55,6 +57,7 @@ async function openModuleList(s: System, log: RunLog, module?: string) {
  * screenshot as well, so a module is only flagged after both readings agree something is missing.
  */
 export async function readModule(s: System, log: RunLog, code: string): Promise<{ raw: RawModule; method: "page" | "page+screenshot" }> {
+  await caption(s, `Reading module ${code} from SITS`);
   await openModuleList(s, log, code);
   await log.step(
     "Open module details",

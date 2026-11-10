@@ -35,6 +35,14 @@ Connectors keep system-specific wording out of the main flow, so a real SITS/BB 
 
 The agent does not know which layout is active and never sets it.
 
+## Demo affordances
+
+For screen recordings, since the agent never moves the real mouse:
+
+- `DEMO_OVERLAY=true` (default) draws a ring, a pointer and a label around the element the agent is about to use, plus a one-line caption at the bottom of the page describing the step (`agent/src/overlay.ts`).
+- `START_DELAY_MS=15000` prints a countdown before either browser window opens, so a recording can be started first.
+- Everything the overlay draws is `aria-hidden`, so it stays out of the accessibility tree sent to the model. Check that after changing it: the caption text must not appear in `page.snapshot().formattedTree`.
+
 ## Rules
 
 - Actions are natural language only: no hardcoded selectors, coordinates or deep-link URLs (only the start page URLs are configured).
