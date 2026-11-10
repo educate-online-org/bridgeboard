@@ -36,7 +36,17 @@ async function openSystem(name: "sits" | "bb"): Promise<{ system: System; close:
   return { system: { stagehand, page }, close: async () => browser.close().catch(() => {}) };
 }
 
+/** Give the human time to start recording before anything appears on screen. */
+async function countdown(seconds: number) {
+  if (seconds <= 0) return;
+  for (let left = seconds; left > 0; left--) {
+    console.log(`\n  Starting in ${left}s — start your screen recording now.\n`);
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+}
+
 export async function openSession(): Promise<Session> {
+  await countdown(Math.round(config.startDelayMs / 1000));
   const [sits, bb] = await Promise.all([openSystem("sits"), openSystem("bb")]);
   return {
     sits: sits.system,

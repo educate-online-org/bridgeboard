@@ -24,6 +24,8 @@ export const config = {
   // Sending a page screenshot to the model provider is the one data flow a DPO is most likely to
   // refuse. Off with ALLOW_SCREENSHOTS=false; see docs/DATA_FLOW_DPIA.md.
   allowScreenshots: process.env.ALLOW_SCREENSHOTS !== "false",
+  // Seconds to wait before the browser windows open, so a screen recording can be started first.
+  startDelayMs: Number(process.env.START_DELAY_MS ?? 0) || 0,
   // Fake-system defaults; real systems would supply their own credentials.
   sits: { username: process.env.SITS_USERNAME ?? "sits_admin", password: process.env.SITS_PASSWORD ?? "demo123" },
   bb: { username: process.env.BB_USERNAME ?? "bb_admin", password: process.env.BB_PASSWORD ?? "demo123" },
