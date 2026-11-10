@@ -127,6 +127,14 @@ export function waitForNoRole(s: System, role: string, timeout = 20_000): Promis
   );
 }
 
+/** What the rich text editor currently contains, as a person would read it. */
+export function editorText(s: System): Promise<string> {
+  return s.page.evaluate(`(() => {${PRELUDE}
+    const ed = els.find((e) => visible(e) && e.getAttribute("contenteditable") === "true");
+    return ed ? (ed.innerText || "") : "";
+  })()`);
+}
+
 /** Put the cursor in the rich text editor (the editable area), ready for typing. */
 export async function focusEditor(s: System, timeout = 20_000): Promise<void> {
   const deadline = Date.now() + timeout;
