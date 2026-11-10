@@ -39,7 +39,8 @@ The agent does not know which layout is active and never sets it.
 
 For screen recordings, since the agent never moves the real mouse:
 
-- `DEMO_OVERLAY=true` (default) draws a ring, a pointer and a label around the element the agent is about to use, plus a one-line caption at the bottom of the page describing the step (`agent/src/overlay.ts`).
+- `DEMO_OVERLAY=true` (default) draws a status card near the top of the page plus a ring, pointer and label around the element the agent is about to use (`agent/src/overlay.ts`).
+  The card speaks in human terms and changes per action: "Thinking…" while an `act()` runs, "Looking at the page…" for `observe()`, "Reading the page…" for `extract()`, then what it is doing ("Writing the document", "Saving, hidden from students", "Typing the content…"). All model calls go through `connectors/model.ts` so the wording lives in one place.
 - `START_DELAY_MS=15000` prints a countdown before either browser window opens, so a recording can be started first.
 - Everything the overlay draws is `aria-hidden`, so it stays out of the accessibility tree sent to the model. Check that after changing it: the caption text must not appear in `page.snapshot().formattedTree`.
 

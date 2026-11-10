@@ -6,7 +6,8 @@ import { ensure, waitForUrl, type System } from "../browser";
 import { config } from "../config";
 import type { RunLog } from "../log";
 import { fillField, typeIntoEditor } from "./common";
-import { caption, ensureOverlay } from "../overlay";
+import { ensureOverlay, status } from "../overlay";
+import { act } from "./model";
 import { clickMenuItem, clickText, hasDialogSaying, hasMenuItem, hasText, isExpanded, waitForClickable, waitForNoRole, waitForRole, waitForRowText } from "./dom";
 
 export type SetUpOutcome = "created" | "skipped";
@@ -52,7 +53,7 @@ export async function setUpCourse(s: System, log: RunLog, m: Module): Promise<Se
   await log.step(
     `Create the “${BB_STRUCTURE.folder}” folder`,
     async () => {
-      await caption(s, `Creating the folder “${BB_STRUCTURE.folder}”`);
+      await status(s, "Creating the folder", BB_STRUCTURE.folder, true);
       await addContent(s, "at the top level of the course", "Folder");
       await expectPanel(s);
       await fillField(s, "title field of the new content panel", BB_STRUCTURE.folder);
@@ -75,13 +76,13 @@ async function createDocument(s: System, log: RunLog, code: string, title: strin
         log.info(`  ↷ “${title}” already exists, not created again.`);
         return;
       }
-      await caption(s, `Writing the document “${title}”`);
+      await status(s, "Writing the document", title, true);
       await openFolder(s, BB_STRUCTURE.folder);
       await addContent(s, `inside the folder “${BB_STRUCTURE.folder}”`, "Document");
       await expectPanel(s);
       await fillField(s, "title field of the new content panel", title);
       await typeIntoEditor(s, lines);
-      await caption(s, `Saving “${title}” — hidden from students`);
+      await status(s, "Saving, hidden from students", title, true);
       await save(s);
       await waitForRowText(s, title);
     },
@@ -121,12 +122,12 @@ export async function pickType(s: System, type: "Folder" | "Document") {
 }
 
 async function openAddMenu(s: System, where: string) {
-  ensure(await s.stagehand.act(`open the menu for adding new content ${where}`), "open the add-content menu");
+  ensure(await act(s, `open the menu for adding new content ${where}`, "Opening the add-content menu"), "open the add-content menu");
 }
 
 async function save(s: System) {
-  ensure(await s.stagehand.act("click the button that saves the new content in the panel"), "save");
-  ensure(await s.stagehand.act("confirm the dialog to finish adding the content"), "confirm");
+  ensure(await act(s, "click the button that saves the new content in the panel", "Saving the new content"), "save");
+  ensure(await act(s, "confirm the dialog to finish adding the content", "Confirming the save"), "confirm");
   await waitForNoRole(s, "dialog"); // panel and confirmation are both gone: the row is on the page
 }
 
