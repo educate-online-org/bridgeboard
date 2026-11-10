@@ -27,7 +27,7 @@ Full specification: [`docs/BRIEF.md`](docs/BRIEF.md)
 | `packages/shared` | Shared TypeScript types, Zod schemas, the document text builders | — |
 | `verify/` | Compares the SITS database against the BB database; console + HTML report | — |
 | `seed/` | Seed data for both systems (including one deliberately broken module) | — |
-| `docs/` | Project brief and reference notes | — |
+| `docs/` | Project brief, UI references, access checklist, data flow / DPIA draft | — |
 
 ## Setup
 
@@ -107,7 +107,7 @@ Fake logins: SITS `sits_admin` / `demo123`, Blackboard `bb_admin` / `demo123`.
 | Branding | Both fake systems carry the name CCCU (text only, no real logos or assets) |
 | Partial failure | Leave what was created (it is hidden), mark the module failed in the log and report |
 | Re-runs | If the course already has "Module Information", skip the module and log it |
-| Real systems (later) | Agent built so the fake systems can be swapped for CCCU's real ones; verification via the Blackboard REST API. Access needed: [`docs/CCCU_ACCESS.md`](docs/CCCU_ACCESS.md) |
+| Real systems (later) | Agent built so the fake systems can be swapped for CCCU's real ones; verification via the Blackboard REST API. Blocked on access and on **written vendor consent** — both vendors' acceptable-use terms restrict automated UI access. See [`docs/CCCU_ACCESS.md`](docs/CCCU_ACCESS.md) and [`docs/DATA_FLOW_DPIA.md`](docs/DATA_FLOW_DPIA.md) |
 | UI fidelity | Fake Blackboard copies real Ultra where it costs nothing; deliberate differences are listed as [ours diverges] in [`docs/UI_REFERENCES.md`](docs/UI_REFERENCES.md) |
 
 ## Milestones

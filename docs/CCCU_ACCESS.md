@@ -10,6 +10,25 @@ Status key: ☐ not requested · ◐ requested · ☑ granted
 
 ---
 
+## 0. Vendor consent — blocking, and not technical
+
+Both vendors' terms restrict automated access to their UIs. This is the first thing to resolve, because it decides whether the UI-agent approach is permissible at all.
+
+- **Tribal (SITS):** the Tribal Admissions Acceptable Use Policy states that users may not access the system by automated means, or scrape, crawl or harvest any content or personal data, **without prior written consent**.
+- **Anthology (Blackboard):** the Platform Policies prohibit unauthorised data harvesting, web scraping and password engineering, and bar using electronic means to avoid use limitations or to overload system resources via automated scripts.
+
+Consequences:
+- ☐ Confirm with CCCU procurement/legal whether these policies bind CCCU contractually, and whether CCCU can grant consent or whether it must come from the vendor.
+- ☐ Request **written consent** for a narrowly scoped pilot: named accounts, listed courses only, module data only (no student records), hidden content only, rate-limited, audit log available on request.
+- ☐ In parallel, establish which **sanctioned integration paths** the vendors and CCCU support, since those avoid the question entirely:
+  - Anthology: REST API, SIS/Data Integration framework, course templates or content copy
+  - Tribal: StuTalk / web services, or a scheduled report or export
+- ☐ If consent is refused and no sanctioned write path exists, record that the UI-agent route is closed for these systems and fall back to a human-in-the-loop drafting tool.
+
+Reading a page with an automated browser is "harvesting" on a strict reading, and automating a sign-in is close to "password engineering". The least problematic variant is a human signing in and the automation attaching to an authenticated session — but that is a mitigation, not a permission.
+
+---
+
 ## 1. Blackboard Ultra
 
 ### Environments
@@ -31,7 +50,9 @@ Status key: ☐ not requested · ◐ requested · ☑ granted
 - ☐ **Course ID naming convention** and how it maps to SITS module codes and terms (e.g. `U24CS101-2026-S1`?)
 - ☐ Are course shells pre-created from SITS already? By what process (data feed / integration)?
 - ☐ Any standard folder / document structure CCCU expects in module pages (names, templates)
-- ☐ Which **content editor** our instance uses and how it behaves (see note below)
+- ☐ Which **content editor** our instance uses and how it behaves (see note below), and whether the "New Content Editor (Beta)" flag is on — it becomes mandatory for all customers in December 2026
+- ☐ Confirmation that the agent's account holds `Course/Organization (Content Areas) > Edit Materials` on the pilot courses (the privilege needed to edit a Document) and nothing broader
+- ☐ Which document block types CCCU expects in module pages (Content block vs HTML block), and whether any template or course-copy process already produces them
 - ☐ Release/update schedule (Ultra updates monthly; UI changes can affect the agent)
 
 ## 2. SITS

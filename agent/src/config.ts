@@ -21,6 +21,9 @@ export const config = {
   sitsUrl: process.env.SITS_URL ?? "http://localhost:3001",
   bbUrl: process.env.BB_URL ?? "http://localhost:3002",
   headless: process.env.HEADLESS === "true",
+  // Sending a page screenshot to the model provider is the one data flow a DPO is most likely to
+  // refuse. Off with ALLOW_SCREENSHOTS=false; see docs/DATA_FLOW_DPIA.md.
+  allowScreenshots: process.env.ALLOW_SCREENSHOTS !== "false",
   // Fake-system defaults; real systems would supply their own credentials.
   sits: { username: process.env.SITS_USERNAME ?? "sits_admin", password: process.env.SITS_PASSWORD ?? "demo123" },
   bb: { username: process.env.BB_USERNAME ?? "bb_admin", password: process.env.BB_PASSWORD ?? "demo123" },

@@ -41,6 +41,21 @@ Facts from public guides that the fake BB should mirror:
 - **[ours diverges]** We offer Folder and Document only. Every extra menu entry is a chance for the agent to pick wrong, and nothing in the demo creates links, tests or assignments. The section headings are worth adding if the menu ever needs to look richer.
 - Assignments use the same right-hand panel with a settings cog, **Due date** (+ a "No due date" checkbox), and options such as "Collect submissions offline". "Post assessment marks automatically" is deliberately off for offline submissions.
 
+**[seen]** Ultra document block model (Anthology's own docs, Aug 2026)
+- "Documents are created with a variety of block types." Text lives in a **Content block**, i.e. the standard WYSIWYG editor — formatting belongs to a block, not to the document as a whole.
+- Block types: Content block (WYSIWYG), HTML block (raw HTML/CSS), Knowledge check (MCQ, optionally AI-generated), File upload, Cloud upload (e.g. OneDrive), Content Collection, Image, Audio/Video (Video Studio — premium licence), Divider, and Convert-a-file (PDF/PPT/DOCX turned into document blocks).
+- Creation flow matches the fake: `+` → **Create** → *Create Item* panel → **Document** → New Document page.
+- Editing a Document requires the course-role privilege `Course/Organization (Content Areas) > Edit Materials`; adding Knowledge Checks additionally needs test-build privileges.
+- Keyboard: `ALT+F10` (`Fn+ALT+F10` on Mac) jumps to the editor toolbar, arrow keys select an option such as numbered list.
+- **[ours diverges]** The fake has one continuous Quill editor per document and Markdown-ish shortcuts (`- ` bullets, `# ` headings). Real Ultra needs a Content block created first, then typing *inside that block*, and formatting via the toolbar — so the "enter formatted content" step becomes: add block, focus block, type, format via toolbar.
+- Sources: [Documents](https://help.anthology.com/blackboard/instructor/en/course-and-content-management/add-content/documents.html) (block types, creation flow, privileges).
+
+**[seen]** The content editor is changing (Aug–Dec 2026)
+- A **New Content Editor (Beta)** ships from the **August 2026** release: instructors choose beta or classic per content block, controlled by the feature flag "New Content Editor for Blackboard Documents (Beta)". It becomes the default for everyone in **December 2026**.
+- Changes: reorganised menus, streamlined toolbar, "enhanced list and table capabilities", better keyboard navigation, "modern shortcuts".
+- Consequence for us: the most fragile step (typing and formatting) sits on a surface that changes twice inside the project's lifetime, and two editors may be live at once depending on the flag. Any connector must detect which editor it is facing.
+- Sources: [New Content Editor (Beta)](https://help.anthology.com/blackboard/administrator/en/tools-management/new-content-editor--beta-.html), [editor comparison table](https://help.anthology.com/blackboard/instructor/en/course-and-content-management/add-content/new-content-editor--beta-/content-editor-comparison-table.html).
+
 From guides (still unverified visually):
 - Ultra Documents are built from **blocks** (text blocks, files, etc.), not one big editor. Our fake keeps one editor per document for simplicity; worth revisiting with real screenshots.
 - Folders nest at most **2 levels deep**. Our structure (course → "Module Information" → documents) fits.

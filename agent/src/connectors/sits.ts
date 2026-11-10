@@ -69,7 +69,8 @@ export async function readModule(s: System, log: RunLog, code: string): Promise<
     log.step(
       screenshot ? "Extract module details (second look, with screenshot)" : "Extract module details",
       async (attempt) => {
-        const { data } = await s.stagehand.extract(EXTRACT_INSTRUCTION, RawModuleSchema, { screenshot: screenshot || attempt > 2 });
+        const wantScreenshot = config.allowScreenshots && (screenshot || attempt > 2);
+        const { data } = await s.stagehand.extract(EXTRACT_INSTRUCTION, RawModuleSchema, { screenshot: wantScreenshot });
         if (data.code?.trim() !== code) throw new Error(`Page shows module ${data.code ?? "?"}, expected ${code}`);
         return data;
       },
